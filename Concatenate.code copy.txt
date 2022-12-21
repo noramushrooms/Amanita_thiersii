@@ -1,0 +1,72 @@
+
+
+#preprocess fasta files so all sequences fit on a single line  
+for file in *align.fasta;do 
+cat $file | tr '\r' '\n' | sed $'s/[^[:print:]\t]//g' | sed '/^>/ s/$/zzz/' |tr -d '\n' | sed $'s/zzz/\\\n/g'  | sed $'s/\>/\\\n\>/g' | grep . > temp 
+mv temp $file 
+done 
+# 
+#loop over isolate 
+while read iso;do 
+#set counter to zero so below it knows which entry number it is for each entry to correctly format fasta 
+Counter="0" 
+#loop over all the align.fasta files 
+for file in *align.fasta;do 
+# 
+#define what an empty sequence should look like 
+Empty_seq=`head -2 $file  | tail -1| sed 's/./-/g'` 
+# 
+#check if it’s the first fasta entry for an isolate 
+if [ "$Counter" -eq 0 ];then 
+# 
+#if it exists in the first file then grab it out and keep the OG header 
+grep -A 1 "$iso" $file 
+# 
+exist_check=` grep -A 1 "$iso" $file | wc -l | sed 's/ //g'` 
+# 
+#check if fasta entry exists for this isolate and this file 
+if [ "$exist_check" -eq 0 ];then 
+# 
+#if it doesn’t exist in first file then create a new header 
+other_name=`grep $iso *align.fasta | head -1 | sed 's/.*>/>/'`
+echo -e '>'$other_name"__concat""\n"$Empty_seq 
+fi 
+# 
+#contingency for not being the first entry 
+else 
+# 
+#grab out entry, but remove header 
+grep -A 1 "$iso" $file | tail -1 
+# 
+exist_check=` grep -A 1 "$iso" $file | wc -l | sed 's/ //g'` 
+# 
+if [ "$exist_check" -eq 0 ];then 
+echo -e $Empty_seq 
+fi 
+# 
+fi 
+# 
+Counter=$[Counter + 1] 
+# 
+done 
+done < names > concatenated.fa 
+# 
+#final processing to make everything on one line again as above. 
+cat concatenated.fa | tr '\r' '\n' | sed $'s/[^[:print:]\t]//g' | sed '/^>/ s/$/zzz/' |tr -d '\n' | sed $'s/zzz/\\\n/g'  | sed $'s/\>/\\\n\>/g' | grep . | grep -v '>$' > temp 
+mv temp concatenated.fa 
+
+
+###########################
+###New names 12/20/22 redo concat of MAFFT results
+###########################
+
+#preprocess fasta files so all sequences fit on a single line  
+for file in 22.April/221219.Analysis/MAFFT_results/MAFFT_nogaps/*nogaps.fasta;do cat $file | tr '\r' '\n' | sed $'s/[^[:print:]\t]//g' | sed '/^>/ s/$/zzz/' |tr -d '\n' | sed $'s/zzz/\\\n/g'  | sed $'s/\>/\\\n\>/g' | grep . > temp;mv temp $file ; done 
+# 
+#loop over isolate 
+while read iso;do Counter="0" for file in 22.April/221219.Analysis/MAFFT_results/MAFFT_nogaps/*nogaps.fasta;do Empty_seq=`head -2 $file  | tail -1| sed 's/./-/g'` ; if [ "$Counter" -eq 0 ];then grep -A 1 "$iso" $file ; exist_check=` grep -A 1 "$iso" $file | wc -l | sed 's/ //g'`; if [ "$exist_check" -eq 0 ];then other_name=`grep $iso *nogaps.fasta | head -1 | sed 's/.*>/>/'`; echo -e '>'$other_name"__concat""\n"$Empty_seq ; fi else ; grep -A 1 "$iso" $file | tail -1; exist_check=` grep -A 1 "$iso" $file | wc -l | sed 's/ //g'`; if [ "$exist_check" -eq 0 ];then ; echo -e $Empty_seq ; fi fi ; Counter=$[Counter + 1] ;done 
+done < names > concatenated.fa 
+# 
+#final processing to make everything on one line again as above. 
+cat concatenated.fa | tr '\r' '\n' | sed $'s/[^[:print:]\t]//g' | sed '/^>/ s/$/zzz/' |tr -d '\n' | sed $'s/zzz/\\\n/g'  | sed $'s/\>/\\\n\>/g' | grep . | grep -v '>$' > temp 
+mv temp concatenated.fa 
