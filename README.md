@@ -6,7 +6,7 @@ Code and data for A. thiersii project
 1. Local alignment = L-INS-i algorithm (same as before) "$ mafft --auto --adjustdirectionaccurately input_file > output_file"
 2. Global alignment = G-INS-i algorithm "$ mafft --globalpair --maxiterate 1000 --adjustdirectionaccurately input_file > output_file" (co-author Robledo indicated he usually used G-INS-i so I wanted to try it to see if it made a difference.)
 # Output files of MAFFT have "global" in file name if they were produced with G-INS-i MAFFT algorithm
-After aligning with MAFFT, I ran IQtree on MAFFT alignments
-After IQtree, ran "cat" to concatenate treefiles 
-Then I ran ASTRAL
+After aligning with MAFFT, I ran IQtree on MAFFT alignments.
+After IQtree, ran "cat" to concatenate treefiles. 
+Then I ran ASTRAL.
 # Separately, I tried to re-run concatenate code from Mickey "Concatenate.code copy" but could not get it to work in Terminal.
