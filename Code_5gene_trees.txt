@@ -1,0 +1,30 @@
+#Code for MAFFT then CAT then IQtree and ASTRAL
+#This takes the same sequences as before, BUT OMITS A. thiersii 10802 (because it's nearly identical to A. thiersii Skay4041_het).
+#I kept in my file paths so you could follow what I did
+
+#MAFFT local alignment
+For f in 22.April/221219.Analysis/Fasta/Fasta_nogaps/*.fasta; do mafft --auto --adjustdirectionaccurately $f >  22.April/221219.Analysis/MAFFT_results/MAFFT_nogaps/${f##*/}; done
+
+#MAFFT global alignment
+for f in 22.April/221219.Analysis/Fasta/Fasta_nogaps/*.fasta; do mafft --globalpair --maxiterate 1000 --adjustdirectionaccurately $f > 22.April/221219.Analysis/MAFFT_results/MAFFT_nogaps/global/${f##*/}; done
+
+##Then I manually renamed the global ones with global at the end.
+#In order to run ASTRAl, I first ran IQtree on each alignment
+for f in 22.April/221219.Analysis/MAFFT_results/*.fasta; do iqtree -s $f -m MFP -msub nuclear -bb 1000 -bnni -pre 22.April/221219.Analysis/iqtree_output/${f##*/}; done
+
+##Then cat the iqtree treefiles, first MAFFT local alignment
+cat 22.April/221219.Analysis/iqtree_output/*fasta.treefile > 22.April/221219.Analysis/astral5gene/input5gene.trees
+
+#and MAFFT global alignment
+cat 22.April/221219.Analysis/iqtree_output/global/*fasta.treefile > 22.April/221219.Analysis/astral5gene/input5geneglobal.trees
+
+#Then ASTRAL local
+ java -jar 22.April/Astral/astral.5.7.8.jar -i 22.April/221219.Analysis/astral5gene/input5gene.trees -o 22.April/221219.Analysis/astral5gene/output5geneastral.tre
+
+
+##And run ASTRAL global
+java -jar ~/Desktop/22.April/Astral/astral.5.7.8.jar -i 22.April/221219.Analysis/astral5gene/input5geneglobal.trees -o 22.April/221219.Analysis/astral5gene /output5geneglobalastral.tre
+
+#The ASTRAL output trees place A. foetens isotope (10801) very far from Amanita sp. from Argentina (10175) which was not the case from previous trees.
+#So I tried to recreate the 5-gene concatenation code to run IQtree on the concatenated sequences without ASTRAL, but I couldn't get the Concatenate code to work (saved as separate file). So I could not re-create the original tree 
+ 
