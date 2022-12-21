@@ -12,6 +12,10 @@ for f in 22.April/221219.Analysis/Fasta/Fasta_nogaps/*.fasta; do mafft --globalp
 #In order to run ASTRAl, I first ran IQtree on each alignment
 for f in 22.April/221219.Analysis/MAFFT_results/*.fasta; do iqtree -s $f -m MFP -msub nuclear -bb 1000 -bnni -pre 22.April/221219.Analysis/iqtree_output/${f##*/}; done
 
+#global
+for f in 22.April/221219.Analysis/MAFFT_results/MAFFT_221221/global_221221/*.fasta; do iqtree -s $f -m MFP -msub nuclear -bb 1000 -bnni -pre 22.April/221219.Analysis/iqtree_output/global/${f##*/}; done
+
+
 ##Then cat the iqtree treefiles, first MAFFT local alignment
 cat 22.April/221219.Analysis/iqtree_output/*fasta.treefile > 22.April/221219.Analysis/astral5gene/input5gene.trees
 
@@ -23,8 +27,9 @@ cat 22.April/221219.Analysis/iqtree_output/global/*fasta.treefile > 22.April/221
 
 
 ##And run ASTRAL global
-java -jar ~/Desktop/22.April/Astral/astral.5.7.8.jar -i 22.April/221219.Analysis/astral5gene/input5geneglobal.trees -o 22.April/221219.Analysis/astral5gene /output5geneglobalastral.tre
+java -jar ~/Desktop/22.April/Astral/astral.5.7.8.jar -i 22.April/221219.Analysis/astral5gene/input5geneglobal.trees -o 22.April/221219.Analysis/astral5gene/output5geneglobalastral.tre
 
-#The ASTRAL output trees place A. foetens isotope (10801) very far from Amanita sp. from Argentina (10175) which was not the case from previous trees.
+#The ASTRAL output duplicates the 10801 and 10175 samples because the "--adjustdirectionmanually" tag in MAFFT adds an extra "_R_" to the beginning of the sequence name if it had to use the reverse sequence. I'm not fancy enough to know how to remove that, can you please help?
+
 #So I tried to recreate the 5-gene concatenation code to run IQtree on the concatenated sequences without ASTRAL, but I couldn't get the Concatenate code to work (saved as separate file). So I could not re-create the original tree 
  
