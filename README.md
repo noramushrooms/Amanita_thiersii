@@ -1,12 +1,19 @@
-# Amanita_thiersii
-Code and data for A. thiersii project
-# On 12/19/22 Anne requested I re-do analysis of 5-gene tree omitting genes from A. thiersii 10802 because they are too closely related to A. thiersii Skay4041_het. 
-(I think perhaps we should omit A. thiersii Skay4041_het and keep sequences from 10802 because 10802 includes all 5 genes and Skay4041_het only has two, but I would like your advice on that problem).
-# For today, I omitted all 5 genes for 10802 in all five raw fasta files, then did alignment with MAFFT using two methods
-1. Local alignment = L-INS-i algorithm (same as before) "$ mafft --auto --adjustdirectionaccurately input_file > output_file"
-2. Global alignment = G-INS-i algorithm "$ mafft --globalpair --maxiterate 1000 --adjustdirectionaccurately input_file > output_file" (co-author Robledo indicated he usually used G-INS-i so I wanted to try it to see if it made a difference.)
-# Output files of MAFFT have "global" in file name if they were produced with G-INS-i MAFFT algorithm
-After aligning with MAFFT, I ran IQtree on MAFFT alignments.
-After IQtree, ran "cat" to concatenate treefiles. 
-Then I ran ASTRAL.
-# Separately, I tried to re-run concatenate code from Mickey "Concatenate.code copy" but could not get it to work in Terminal.
+# Amanita_thiersii and A. foetens
+Code and data for A. thiersii/ A. foetens project. 
+
+# Download genes from NCBI for other saprotrophic Amanitas
+Genes: ITS, LSU, SSU, mitochondrial LSU, mitochondrial SSU
+
+# Do alignment with MAFFT using the L-INS-i method
+1. Local alignment = L-INS-i algorithm "$ mafft --auto --adjustdirectionaccurately input_file > output_file"
+
+# After aligning with MAFFT, run IQtree on MAFFT alignments.
+2. "for f in PATH/MAFFT_results/_*.fasta; do iqtree -s $f -m MFP -msub nuclear -bb 1000 -bnni -pre PATH/iqtree_output/${f##*/}; done"
+
+# After IQtree, ran "cat" to concatenate treefiles. 
+3. cat "PATH/iqtree_output/* fasta.treefile > PATH/astral5gene/input5gene.trees"
+ 
+# Then I ran ASTRAL.
+4. "java -jar ~/Astral/astral.5.7.8.jar -i PATH/astral5gene/input5gene.trees -o PATH/astral5gene/output5geneastral.tre
+
+#For details, see file "Code_5gene_trees.txt"
