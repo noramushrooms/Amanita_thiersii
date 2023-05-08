@@ -10,10 +10,10 @@ Genes: ITS, LSU, SSU, mitochondrial LSU, mitochondrial SSU
 # After aligning with MAFFT, run IQtree on MAFFT alignments.
 2. "for f in PATH/MAFFT_results/_*.fasta; do iqtree -s $f -m MFP -msub nuclear -bb 1000 -bnni -pre PATH/iqtree_output/${f##*/}; done"
 
-# After IQtree, ran "cat" to concatenate treefiles. 
+# After IQtree, run "cat" to concatenate treefiles. 
 3. cat "PATH/iqtree_output/* fasta.treefile > PATH/astral5gene/input5gene.trees"
  
-# Then I ran ASTRAL.
+# Then run ASTRAL.
 4. "java -jar ~/Astral/astral.5.7.8.jar -i PATH/astral5gene/input5gene.trees -o PATH/astral5gene/output5geneastral.tre
 
-#For details, see file "Code_5gene_trees.txt"
+# For details, see file "Code_5gene_trees.txt"
